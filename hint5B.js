@@ -13,33 +13,61 @@
   The list of files should be printed to the console, one file per line. You  
   must use asynchronous I/O.  */
 
-
-/*var dir = process.argv[2];
-var ext = '.md';
+var fs = require('fs');
 var path = require('path');
 
+module.exports = function(dirname, ext, callback) {
+  var extension = "." + ext;
+  fs.readdir(dirname, function(err, files) {
+    if (err) {
+      callback(err, null);
+    }
+    else {
+      result = [];
+      files.forEach(function(entry) {
+        if (path.extname(entry) == extension) {
+          result.push(entry);
+        }
+      });
+      callback(null, result);
+    }
+  });
+  
+};
 
- 
-fs.readdir(dir, function(err, list){
-if(err) throw err;
-for (var i = 0; i < list.length; i++) {
-	var index = list[i];
-	if(path.extname(index)===ext){
-		console.log(index);
-	}
-}
-});*/
+/**
 
-var searchFile = function(){ dir, ext}
-    var fs = require('fs')  
-     var path = require('path')  
-     fs.readdir(dir, function (err, list) {  
+ Here's the official solution in case you want to compare notes:  
+ ─────────────────────────────────────────────────────────────────────────────  
+ _/usr/lib/node_modules/learnyounode/exercises/make_it_modular/solution/solution.js_ :  
+   
+     var filterFn = require('./solution_filter.js')  
+     var dir = process.argv[2]  
+     var filterStr = process.argv[3]  
+     filterFn(dir, filterStr, function (err, list) {  
+       if (err)  
+         return console.error('There was an error:', err)  
        list.forEach(function (file) {  
-         if (path.extname(file) === '.' + ext)  
-           console.log(file)  
+         console.log(file)  
        })  
      })  
+   
+ ─────────────────────────────────────────────────────────────────────────────  
+ _/usr/lib/node_modules/learnyounode/exercises/make_it_modular/solution/solution_filter.js_ :  
+   
+     var fs = require('fs')  
+     var path = require('path')  
+     module.exports = function (dir, filterStr, callback) {  
+       fs.readdir(dir, function (err, list) {  
+         if (err)  
+           return callback(err)  
+       
+         list = list.filter(function (file) {  
+           return path.extname(file) === '.' + filterStr  
+         })  
+       
+         callback(null, list)  
+       })  
+     }  
 
-
-}
-module.exports.searchFile =searchFile;
+**/
